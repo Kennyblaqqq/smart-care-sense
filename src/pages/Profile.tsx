@@ -32,7 +32,16 @@ const profileSchema = z.object({
   emergency_contact_phone: z.string().trim().max(30).regex(/^[+\d\s\-()]*$/, "Invalid phone").optional().or(z.literal("")),
 });
 
-type ProfileForm = z.infer<typeof profileSchema>;
+type ProfileForm = {
+  full_name?: string;
+  date_of_birth?: string;
+  sex?: string;
+  height_cm?: number;
+  weight_kg?: number;
+  blood_type?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+};
 
 const TAG_LIMIT = 50;
 
@@ -45,7 +54,7 @@ export default function Profile() {
   const [allergies, setAllergies] = useState<string[]>([]);
 
   const form = useForm<ProfileForm>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(profileSchema) as any,
     defaultValues: {
       full_name: "", date_of_birth: "", sex: "", blood_type: "",
       emergency_contact_name: "", emergency_contact_phone: "",

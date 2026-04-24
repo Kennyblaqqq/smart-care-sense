@@ -54,7 +54,7 @@ export async function pairHeartRateMonitor(onHR: HRListener): Promise<{
   const hrChar = await hrService.getCharacteristic("heart_rate_measurement");
   await hrChar.startNotifications();
   hrChar.addEventListener("characteristicvaluechanged", (e: Event) => {
-    const v = (e.target as BTRemoteGATTCharacteristic).value;
+    const v = (e.target as unknown as BTRemoteGATTCharacteristic).value;
     if (v) onHR(parseHeartRate(v));
   });
 

@@ -19,8 +19,14 @@ const profileSchema = z.object({
   full_name: z.string().trim().max(100, "Max 100 characters").optional().or(z.literal("")),
   date_of_birth: z.string().optional().or(z.literal("")),
   sex: z.string().max(20).optional().or(z.literal("")),
-  height_cm: z.coerce.number().min(30, "Too low").max(272, "Too high").optional().or(z.nan()),
-  weight_kg: z.coerce.number().min(2, "Too low").max(635, "Too high").optional().or(z.nan()),
+  height_cm: z.preprocess(
+    (v) => (v === "" || v === null || v === undefined ? undefined : Number(v)),
+    z.number().min(30, "Too low").max(272, "Too high").optional()
+  ),
+  weight_kg: z.preprocess(
+    (v) => (v === "" || v === null || v === undefined ? undefined : Number(v)),
+    z.number().min(2, "Too low").max(635, "Too high").optional()
+  ),
   blood_type: z.string().max(5).optional().or(z.literal("")),
   emergency_contact_name: z.string().trim().max(100).optional().or(z.literal("")),
   emergency_contact_phone: z.string().trim().max(30).regex(/^[+\d\s\-()]*$/, "Invalid phone").optional().or(z.literal("")),
@@ -82,8 +88,8 @@ export default function Profile() {
       full_name: values.full_name || null,
       date_of_birth: values.date_of_birth || null,
       sex: values.sex || null,
-      height_cm: values.height_cm && !Number.isNaN(values.height_cm) ? values.height_cm : null,
-      weight_kg: values.weight_kg && !Number.isNaN(values.weight_kg) ? values.weight_kg : null,
+      height_cm: typeof values.height_cm === "number" && !Number.isNaN(values.height_cm) ? values.height_cm : null,
+      weight_kg: typeof values.weight_kg === "number" && !Number.isNaN(values.weight_kg) ? values.weight_kg : null,
       blood_type: values.blood_type || null,
       emergency_contact_name: values.emergency_contact_name || null,
       emergency_contact_phone: values.emergency_contact_phone || null,

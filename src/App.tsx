@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Auth from "./pages/Auth.tsx";
 import ComingSoon from "./pages/ComingSoon.tsx";
 import Devices from "./pages/Devices.tsx";
+import Assistant from "./pages/Assistant.tsx";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
@@ -23,7 +24,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/assistant" element={<ProtectedRoute><ComingSoon title="AI Health Assistant" description="RAG-powered chat grounded in your vitals + curated health guidelines." /></ProtectedRoute>} />
+            <Route path="/assistant" element={<ProtectedRoute><Assistant /></ProtectedRoute>} />
             <Route path="/alerts" element={<ProtectedRoute><ComingSoon title="Alerts" description="Anomaly detection on your live vitals stream." /></ProtectedRoute>} />
             <Route path="/devices" element={<ProtectedRoute><Devices /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ComingSoon title="Health Profile" description="Personal info that powers your AI insights." /></ProtectedRoute>} />

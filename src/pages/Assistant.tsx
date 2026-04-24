@@ -6,7 +6,6 @@ import { AppShell } from "@/components/dashboard/AppShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -148,7 +147,7 @@ export default function Assistant() {
         </header>
 
         <Card className="flex-1 flex flex-col overflow-hidden border-border/60 bg-card/40 backdrop-blur-xl">
-          <ScrollArea className="flex-1" viewportRef={scrollRef as any}>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto">
             <div className="p-4 md:p-6 space-y-6">
               {messages.length === 0 ? (
                 <EmptyState onPick={(t) => send(t)} userName={user?.email?.split("@")[0]} />
@@ -202,7 +201,7 @@ export default function Assistant() {
                 </AnimatePresence>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           <form onSubmit={onSubmit} className="border-t border-border/60 p-3 md:p-4 bg-background/40">
             <div className="flex items-end gap-2">

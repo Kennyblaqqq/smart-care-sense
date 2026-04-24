@@ -10,6 +10,7 @@ import ComingSoon from "./pages/ComingSoon.tsx";
 import Devices from "./pages/Devices.tsx";
 import Assistant from "./pages/Assistant.tsx";
 import Alerts from "./pages/Alerts.tsx";
+import Profile from "./pages/Profile.tsx";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
@@ -28,7 +29,7 @@ const App = () => (
             <Route path="/assistant" element={<ProtectedRoute><Assistant /></ProtectedRoute>} />
             <Route path="/alerts" element={<ProtectedRoute><Alerts /></ProtectedRoute>} />
             <Route path="/devices" element={<ProtectedRoute><Devices /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><ComingSoon title="Health Profile" description="Personal info that powers your AI insights." /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

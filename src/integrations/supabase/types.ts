@@ -14,7 +14,269 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      alerts: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          metric_type: string | null
+          resolved_at: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          metric_type?: string | null
+          resolved_at?: string | null
+          severity: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          metric_type?: string | null
+          resolved_at?: string | null
+          severity?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      devices: {
+        Row: {
+          api_key_hash: string | null
+          connection_type: string
+          created_at: string
+          device_type: string
+          id: string
+          is_active: boolean
+          last_seen_at: string | null
+          mac_address: string | null
+          name: string
+          user_id: string
+        }
+        Insert: {
+          api_key_hash?: string | null
+          connection_type: string
+          created_at?: string
+          device_type?: string
+          id?: string
+          is_active?: boolean
+          last_seen_at?: string | null
+          mac_address?: string | null
+          name: string
+          user_id: string
+        }
+        Update: {
+          api_key_hash?: string | null
+          connection_type?: string
+          created_at?: string
+          device_type?: string
+          id?: string
+          is_active?: boolean
+          last_seen_at?: string | null
+          mac_address?: string | null
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      health_knowledge: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          tags: string[] | null
+          title: string
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          id?: string
+          tags?: string[] | null
+          title: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          tags?: string[] | null
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          allergies: string[] | null
+          avatar_url: string | null
+          blood_type: string | null
+          created_at: string
+          date_of_birth: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          full_name: string | null
+          height_cm: number | null
+          id: string
+          medical_conditions: string[] | null
+          medications: string[] | null
+          sex: string | null
+          updated_at: string
+          weight_kg: number | null
+        }
+        Insert: {
+          allergies?: string[] | null
+          avatar_url?: string | null
+          blood_type?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string | null
+          height_cm?: number | null
+          id: string
+          medical_conditions?: string[] | null
+          medications?: string[] | null
+          sex?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Update: {
+          allergies?: string[] | null
+          avatar_url?: string | null
+          blood_type?: string | null
+          created_at?: string
+          date_of_birth?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          full_name?: string | null
+          height_cm?: number | null
+          id?: string
+          medical_conditions?: string[] | null
+          medications?: string[] | null
+          sex?: string | null
+          updated_at?: string
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      symptoms_log: {
+        Row: {
+          created_at: string
+          id: string
+          logged_at: string
+          notes: string | null
+          severity: number | null
+          symptom: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logged_at?: string
+          notes?: string | null
+          severity?: number | null
+          symptom: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logged_at?: string
+          notes?: string | null
+          severity?: number | null
+          symptom?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vitals_readings: {
+        Row: {
+          created_at: string
+          device_id: string | null
+          id: string
+          metadata: Json | null
+          metric_type: string
+          recorded_at: string
+          unit: string
+          user_id: string
+          value: number
+          value_secondary: number | null
+        }
+        Insert: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_type: string
+          recorded_at?: string
+          unit: string
+          user_id: string
+          value: number
+          value_secondary?: number | null
+        }
+        Update: {
+          created_at?: string
+          device_id?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_type?: string
+          recorded_at?: string
+          unit?: string
+          user_id?: string
+          value?: number
+          value_secondary?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vitals_readings_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "devices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

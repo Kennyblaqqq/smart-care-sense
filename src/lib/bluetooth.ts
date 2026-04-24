@@ -4,6 +4,23 @@
 
 export type HRListener = (bpm: number) => void;
 
+// Minimal Web Bluetooth types (experimental, not in lib.dom.d.ts).
+type BTRemoteGATTCharacteristic = {
+  value?: DataView;
+  startNotifications(): Promise<unknown>;
+  readValue(): Promise<DataView>;
+  addEventListener(type: string, cb: (e: Event) => void): void;
+};
+type BTRemoteGATTService = {
+  getCharacteristic(name: string): Promise<BTRemoteGATTCharacteristic>;
+};
+type BTRemoteGATTServer = {
+  connect(): Promise<BTRemoteGATTServer>;
+  disconnect(): void;
+  getPrimaryService(name: string): Promise<BTRemoteGATTService>;
+};
+type BTDevice = { name?: string; id: string; gatt?: BTRemoteGATTServer };
+
 export async function isBluetoothAvailable(): Promise<boolean> {
   // @ts-ignore - experimental web bluetooth
   if (!navigator.bluetooth) return false;
@@ -22,12 +39,12 @@ function parseHeartRate(value: DataView): number {
 }
 
 export async function pairHeartRateMonitor(onHR: HRListener): Promise<{
-  device: BluetoothDevice;
+  device: BTDevice;
   battery?: number;
   disconnect: () => void;
 }> {
   // @ts-ignore - experimental web bluetooth
-  const device: BluetoothDevice = await navigator.bluetooth.requestDevice({
+  const device: BTDevice = await navigator.bluetooth.requestDevice({
     filters: [{ services: ["heart_rate"] }],
     optionalServices: ["battery_service"],
   });
@@ -37,7 +54,7 @@ export async function pairHeartRateMonitor(onHR: HRListener): Promise<{
   const hrChar = await hrService.getCharacteristic("heart_rate_measurement");
   await hrChar.startNotifications();
   hrChar.addEventListener("characteristicvaluechanged", (e: Event) => {
-    const v = (e.target as BluetoothRemoteGATTCharacteristic).value;
+    const v = (e.target as BTRemoteGATTCharacteristic).value;
     if (v) onHR(parseHeartRate(v));
   });
 

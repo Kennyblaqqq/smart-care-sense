@@ -9,22 +9,27 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
+import { getRoleDefaultRoute } from "@/lib/roleRedirect";
 
 const Auth = () => {
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
-    document.title = "Sign in — HealthPulse";
-  }, []);
+  useEffect(() => { document.title = "Sign in — HealthPulse"; }, []);
 
-  if (loading) return null;
+  if (loading) return (
+    <div className="flex min-h-screen items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  );
+
+  // Redirect authenticated users to their role dashboard
+  if (user && role) return <Navigate to={getRoleDefaultRoute(role)} replace />;
   if (user) return <Navigate to="/" replace />;
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -34,7 +39,7 @@ const Auth = () => {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Welcome back");
-    navigate("/");
+    // Navigation handled by the redirect above after role loads
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -50,20 +55,7 @@ const Auth = () => {
     });
     setBusy(false);
     if (error) return toast.error(error.message);
-    toast.success("Account created. You're in.");
-    navigate("/");
-  };
-
-  const handleGoogle = async () => {
-    const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: `${window.location.origin}/`,
-    });
-    if (result.error) {
-      toast.error(result.error.message ?? "Google sign-in failed");
-      return;
-    }
-    if (result.redirected) return;
-    navigate("/");
+    toast.success("Account created! You've been signed in as a Patient.");
   };
 
   return (
@@ -74,6 +66,7 @@ const Auth = () => {
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md"
       >
+        {/* Brand */}
         <div className="mb-8 flex flex-col items-center gap-3">
           <div className="relative">
             <div className="absolute inset-0 rounded-full pulse-ring" />
@@ -92,23 +85,37 @@ const Auth = () => {
               <TabsTrigger value="signup">Create account</TabsTrigger>
             </TabsList>
 
+            {/* ── Sign in ── */}
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Input id="email" type="email" required autoComplete="email"
+                    value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <Input id="password" type="password" required autoComplete="current-password"
+                    value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow" disabled={busy}>
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign in"}
                 </Button>
               </form>
+              <p className="mt-4 text-center text-xs text-muted-foreground">
+                Are you a Doctor or Admin?{" "}
+                <span className="text-primary">Contact your administrator for login credentials.</span>
+              </p>
             </TabsContent>
 
+            {/* ── Sign up (Patient only) ── */}
             <TabsContent value="signup">
+              <div className="mb-4 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                <p className="text-xs text-primary font-medium">Patient Registration</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  New accounts are registered as Patients. Doctors are created by Administrators.
+                </p>
+              </div>
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
@@ -116,33 +123,24 @@ const Auth = () => {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email2">Email</Label>
-                  <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Input id="email2" type="email" required autoComplete="email"
+                    value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password2">Password</Label>
-                  <Input id="password2" type="password" minLength={6} required value={password} onChange={(e) => setPassword(e.target.value)} />
+                  <Input id="password2" type="password" minLength={6} required autoComplete="new-password"
+                    value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <Button type="submit" className="w-full bg-gradient-primary text-primary-foreground hover:opacity-90 shadow-glow" disabled={busy}>
-                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create account"}
+                  {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Patient Account"}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
-
-          <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="h-px flex-1 bg-border" />
-            <span>or</span>
-            <div className="h-px flex-1 bg-border" />
-          </div>
-
-          <Button variant="outline" className="w-full" onClick={handleGoogle}>
-            <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24"><path fill="#fff" d="M21.35 11.1H12v3.2h5.35c-.23 1.37-1.6 4-5.35 4-3.22 0-5.85-2.67-5.85-5.95s2.63-5.95 5.85-5.95c1.83 0 3.06.78 3.76 1.45l2.56-2.47C16.9 3.95 14.7 3 12 3 6.96 3 3 6.96 3 12s3.96 9 9 9c5.2 0 8.62-3.65 8.62-8.78 0-.6-.08-1.1-.27-1.62z"/></svg>
-            Continue with Google
-          </Button>
         </Card>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          By continuing you agree this is a wellness tool, not medical advice.
+          By continuing you agree this is a wellness tool, not a substitute for professional medical advice.
         </p>
       </motion.div>
     </main>

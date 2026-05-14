@@ -44,13 +44,13 @@ export default function DoctorPatientAssignment() {
       `)
       .order("assigned_at", { ascending: false });
 
-    setAssignments((data ?? []).map((r: Record<string, unknown> | null | undefined) => {
+    setAssignments((data ?? []).map((r: any) => {
       const row = r as Record<string, any>;
       return {
-      ...row,
-      doctor_name:  r.doctor?.profiles?.full_name  ?? "Unknown Doctor",
-      patient_name: row.patient?.profiles?.full_name ?? "Unknown Patient",
-    };
+        ...row,
+        doctor_name:  row.doctor?.profiles?.full_name  ?? "Unknown Doctor",
+        patient_name: row.patient?.profiles?.full_name ?? "Unknown Patient",
+      };
     }));
     setLoading(false);
   }, []);
@@ -64,8 +64,8 @@ export default function DoctorPatientAssignment() {
         supabase.from("user_roles").select("user_id, profile:user_id ( full_name )").eq("role", "doctor"),
         supabase.from("user_roles").select("user_id, profile:user_id ( full_name )").eq("role", "patient"),
       ]);
-      setDoctors((dRes.data ?? []).map((r: Record<string, unknown> | null) => ({ id: (r as any)?.user_id, name: (r as any)?.profile?.full_name ?? "Doctor" })));
-      setPatients((pRes.data ?? []).map((r: Record<string, unknown> | null) => ({ id: (r as any)?.user_id, name: (r as any)?.profile?.full_name ?? "Patient" })));
+      setDoctors((dRes.data ?? []).map((r: any) => ({ id: r?.user_id, name: r?.profile?.full_name ?? "Doctor" })));
+      setPatients((pRes.data ?? []).map((r: any) => ({ id: r?.user_id, name: r?.profile?.full_name ?? "Patient" })));
     })();
   }, []);
 

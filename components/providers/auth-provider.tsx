@@ -110,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, sess) => {
+    } = supabase.auth.onAuthStateChange(async (_event: any, sess: any) => {
       setSession(sess);
       setUser(sess?.user ?? null);
       await loadUserData(sess?.user ?? null);
@@ -120,13 +120,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Also try getSession immediately
     supabase.auth
       .getSession()
-      .then(async ({ data: { session: sess } }) => {
+      .then(async ({ data: { session: sess } }: any) => {
         setSession(sess);
         setUser(sess?.user ?? null);
         await loadUserData(sess?.user ?? null);
         done();
       })
-      .catch((err) => {
+      .catch((err: any) => {
         console.error("[Auth] getSession failed:", err);
         done();
       });
@@ -151,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           table: "user_roles",
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
+        (payload: any) => {
           setRole(payload.new.role as UserRole);
         }
       )

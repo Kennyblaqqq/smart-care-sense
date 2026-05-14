@@ -28,7 +28,7 @@ const Dashboard = () => {
       .select("full_name")
       .eq("id", user.id)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (data?.full_name) setProfileName(data.full_name.split(" ")[0]);
       });
   }, [user]);

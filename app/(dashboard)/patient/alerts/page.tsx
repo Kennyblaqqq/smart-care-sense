@@ -64,7 +64,7 @@ export default function Alerts() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "alerts", filter: `user_id=eq.${user.id}` },
-        (payload) => {
+        (payload: any) => {
           setAlerts((prev) => {
             if (payload.eventType === "INSERT") {
               const a = payload.new as Alert;

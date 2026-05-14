@@ -122,7 +122,7 @@ export default function Messages() {
     const ch = supabase.channel(`conv-${convId}`)
       .on("postgres_changes",
         { event: "INSERT", schema: "public", table: "direct_messages", filter: `conversation_id=eq.${convId}` },
-        (payload) => {
+        (payload: any) => {
           const newMsg = payload.new as Message;
           setMessages(prev => {
             // Replace optimistic message if same client_id

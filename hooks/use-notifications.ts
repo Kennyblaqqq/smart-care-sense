@@ -53,7 +53,7 @@ export function useNotifications() {
           table: "notifications",
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
+        (payload: any) => {
           setNotifications((prev) => [payload.new as Notification, ...prev]);
         }
       )
